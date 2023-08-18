@@ -44,11 +44,17 @@ public class Ex28_Switch {
 		위의 개행문자를 버퍼에서 제거한다.
 		nextXXX() :입력된 버퍼에서 개행문자를 만나기 전까지 읽기
 		위의 개행문자를 버퍼에서 제거하지 않는다.
+		지들끼리는 자동으로 스킵하는 기능 내장 \r\n 남기지 않음
 		
 		버퍼 제거 작업
 		scan.skip("\r\n");
 		scan.nextLine();
 		*/
+		
+		//nextLine() 처리 순서
+		//1. 홍길동\r\n
+		//2. \r\n
+		//3. \r\n 삭제
 		
 		//1. 문자열 입력
 		//2. 숫자 입력
@@ -56,6 +62,9 @@ public class Ex28_Switch {
 		System.out.print("문자열 : ");
 		String txt = scan.nextLine();
 		System.out.println(txt);
+		
+		//scan.skip("\r\n"); 쓰면 개행문자 버린 뒤 정상적으로 실행됨, 정석
+		//scan.nextLine(); 같은 일 수행, Scanner()만의 문제
 		
 		System.out.print("숫자 : ");
 		int num = scan.nextInt();
@@ -92,6 +101,8 @@ public class Ex28_Switch {
 	private static void m2() {
 		//요구사항) 자판기
 		//메뉴 출력, 음료 선택, 가격 출력
+		
+		//값: > Label(표시판) ※잘 안씀
 		
 		Scanner scan = new Scanner(System.in);
 		
