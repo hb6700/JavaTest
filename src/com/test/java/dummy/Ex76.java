@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 
 import org.json.simple.JSONArray;
@@ -28,10 +29,164 @@ public class Ex76 {
 
 	public static void main(String[] args) {
 		
-		m1();
+//		m1();
 //		m2();
+//		m3();
+//		m4();
+		checkNationalHoliday();
 		
 	}//main
+
+	public static void checkNationalHoliday() {
+		
+		Calendar calendar = Calendar.getInstance();
+		int year = calendar.get(Calendar.YEAR);
+		int month = 5;//calendar.get(Calendar.MONTH) + 1;
+		int date = 15;//calendar.get(Calendar.DATE);
+
+		String today = String.format("%d%02d%02d", year, month, date);
+		
+		String url = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getAnniversaryInfo?";
+		
+		url += "serviceKey=VynLffD0VdeINXmH95ahUp9F08iyfMO2QQGvIZ%2Fm5tYINkhjBE4Ctat8DD5W3FQ553GNGZ3c%2Bv06VXU1tsN8lQ%3D%3D";
+		url += "&_type=json";
+		url += "&numOfRows=69";
+		url += "&pageNo=1";
+		url += "&solYear=" + year;
+		url += "&Month=" + month;
+		//----------------------------------------------------------------
+		try {
+			URL obj_url = new URL(url);
+			HttpURLConnection conn = (HttpURLConnection)obj_url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Content-type", "application/json");
+			
+			BufferedReader reader = null;
+			
+			if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {	
+				reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			} else {
+				reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+			}
+			
+			JSONParser parser = new JSONParser();
+			JSONObject root = (JSONObject)parser.parse(reader);	
+			JSONObject response = (JSONObject)root.get("response");	
+			JSONObject body = (JSONObject)response.get("body");
+			JSONObject items = (JSONObject)body.get("items");
+			
+			ArrayList<String> temp = new ArrayList<String>();
+
+			if (items.get("item") instanceof JSONObject) {
+				JSONObject item = (JSONObject)items.get("item");
+				if (today.equals(item.get("locdate"))) {
+					System.out.printf("%s입니다.", today);
+				}
+			} else {
+				JSONArray arr = (JSONArray)items.get("item");
+				System.out.println("ddd");
+				for (Object obj : arr) {
+					JSONObject item = (JSONObject)obj;
+					if (today.equals(item.get("locdate"))) {
+						System.out.printf("%s입니다.", today);
+					}
+				}
+			}
+
+			reader.close();
+			conn.disconnect();
+			
+		} catch (Exception e) {
+			
+			System.out.println("at Ex76.m1");
+			e.printStackTrace();
+			
+		}
+
+	}
+	
+	
+	
+private static void m4() {
+		
+	}
+
+//	private static void m3() {
+//		
+//		System.out.println("ㅎㅇ~");
+//		Calendar calendar = Calendar.getInstance();
+//		int year = calendar.get(Calendar.YEAR);
+//		int month = calendar.get(Calendar.MONTH)+1;
+//		
+//		System.out.println(year);
+//		System.out.println(month);
+//		
+//		
+//		//1. 요청URL 만들기
+//		String url = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo?";
+//		url += "ServiceKey=8ZtwLm9u48MiK8nJEQ5NlXvlUINP3KvqEd5qHn0E1aX%2BwmVQKLsqHBSJ0pSf0Z%2FCNaJDFp6bd8jh4OjsAYCj4g%3D%3D";
+//		url += "&_type=json";					//XML or JSON
+//		url += "&numOfRows=10";					//데이터 10개씩 가져오겟다?
+//		url += "&pageNo=1";						//나눈데이터에서 1의 것을 가져오겠다
+//		url += "&solYear="+ year;
+//		url += "&solMonth="+ month;
+//		
+//		//URL객체
+//		try {
+//			//URL객체 생성
+//			URL obj_url = new URL(url);
+//			
+//			//HTTP어쩌구 : URL과 연결하는 객체 생성 > 브라우저 대신 접속
+//			HttpURLConnection conn = (HttpURLConnection)obj_url.openConnection();
+//			
+//			conn.setRequestMethod("GET");
+//			conn.setRequestProperty("Content-type", "application/json");
+//			
+//			BufferedReader reader = null;
+//			if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+//				reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//			}else {
+//				reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));				
+//			}
+//			
+//			//reader > 검색결과 읽기 허용
+//			//	String line = null;
+//			//	while((line = reader.readLine()) != null) {
+//			//		System.out.println(line);
+//			//	}
+//			
+//			JSONParser parser = new JSONParser();
+//			JSONObject root = (JSONObject)parser.parse(reader);
+//			JSONObject response = (JSONObject)root.get("response");
+//			JSONObject body = (JSONObject)response.get("body");
+//			JSONObject items = (JSONObject)body.get("items");			
+//			
+//			ArrayList<String> temp = new ArrayList<String>();
+//			
+//			if(items.get("item") instanceof JSONObject) {
+//				JSONObject item = (JSONObject)items.get("item");
+//				System.out.println("역명 : " + item.get("subwayStationName"));
+//				
+//				temp.add(item.get("subwayStationId").toString());
+//				
+//			}else {
+//				JSONArray arr = (JSONArray)items.get("item");
+//				int n = 1;
+//				for(Object obj : arr) {
+//					JSONObject item = (JSONObject)obj;
+//					System.out.println(n + ".");
+//					System.out.println(year + month + "" + item.get(""));
+//					System.out.println("역명 : " + item.get("subwayStationName"));
+//					System.out.println("--------------------------------");	
+//					n++;
+//					temp.add(item.get("subwayStationId").toString());
+//
+//				}
+//			}	
+//			
+//			reader.close();
+//			conn.disconnect();
+//	}
 
 	private static void m2() {
 	/*
